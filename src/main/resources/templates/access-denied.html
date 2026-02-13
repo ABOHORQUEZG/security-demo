@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso Denegado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .denied-icon {
+            font-size: 6rem;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Security Demo  | :: Spring Boot ::  (v4.1.0-M1)</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/public" th:text="${navbar.public}">Publico</a>
+                <a class="nav-link" href="/user" th:text="${navbar.user}">Usuario</a>
+                <a class="nav-link" href="/admin" th:text="${navbar.admin}">Admin</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm ms-2" th:text="${navbar.logout}">Cerrar Sesion</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="text-center">
+            <div class="denied-icon mb-3">&#9888;</div>
+            <h1 class="display-4 fw-bold text-danger" th:text="${accessdenied.denied}">Acceso Denegado</h1>
+            <p class="lead text-muted mt-3" th:text="${accessdenied.description}">
+                No tienes permisos para acceder a esta pagina.
+            </p>
+            <p class="text-muted" th:text="${accessdenied.reason}">
+                Tu rol actual no tiene autorizacion para ver este recurso.
+            </p>
+            <p class="text-muted small" th:text="${accessdenied.contact}">
+                Contacta al administrador si crees que esto es un error.
+            </p>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="/user" class="btn btn-primary" th:text="${accessdenied.profile}">Ir a mi perfil</a>
+                <a href="/public" class="btn btn-outline-secondary" th:text="${accessdenied.home}">Ir a inicio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
