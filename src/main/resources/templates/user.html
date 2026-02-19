@@ -32,7 +32,7 @@
                         Accesible para USER o ADMIN.
                     </p>
 
-                    <!-- Admin link visible only to admins -->
+                    <!-- Enlace de Admin visible solo para administradoras-->
                     <div sec:authorize="hasRole('ADMIN')" class="mt-3">
                         <a th:href="@{/admin}" class="btn btn-outline-danger">
                             <i class="bi bi-gear"></i> [[#{navbar.admin}]]
