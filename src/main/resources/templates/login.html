@@ -14,7 +14,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="login-card p-5">
-                <!-- Language selector -->
+                <!-- Selector de idioma -->
                 <div class="d-flex justify-content-end gap-1 mb-3">
                     <a th:href="@{/login(lang='es')}" class="btn btn-sm btn-outline-secondary">ES</a>
                     <a th:href="@{/login(lang='en')}" class="btn btn-sm btn-outline-secondary">EN</a>
@@ -26,13 +26,13 @@
                     <h2 class="mt-2" th:text="#{login.title}">Iniciar Sesion</h2>
                 </div>
 
-                <!-- Error message -->
+                <!-- Mensaje de error -->
                 <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     <span th:text="#{login.error}">Usuario o contrasena incorrectos</span>
                 </div>
 
-                <!-- Logout success message -->
+                <!-- Mensaje de éxito al cerrar sesión-->
                 <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <span th:text="#{login.logout}">Sesion cerrada correctamente</span>
