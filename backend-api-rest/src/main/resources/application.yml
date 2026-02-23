@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: foodapp-api-rest
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

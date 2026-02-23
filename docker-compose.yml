@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: foodapp-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-foodapp}
+      POSTGRES_USER: ${POSTGRES_USER:-foodapp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-foodapp_secret_2024}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-foodapp_user} -d ${POSTGRES_DB:-foodapp}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - foodapp-network
+
+  backend-api-rest:
+    build:
+      context: ./backend-api-rest
+      dockerfile: Dockerfile
+    container_name: foodapp-api-rest
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-foodapp}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-foodapp_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-foodapp_secret_2024}
+      JWT_SECRET: ${JWT_SECRET:-mySuperSecretKeyForJWT2024FoodAppMicroservicesArchitecture256Bits!!}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
+    ports:
+      - "${API_REST_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - foodapp-network
+
+  backend-client-app:
+    build:
+      context: ./backend-client-app
+      dockerfile: Dockerfile
+    container_name: foodapp-client-app
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      API_BASE_URL: ${API_BASE_URL:-http://backend-api-rest:8080}
+    ports:
+      - "${CLIENT_APP_PORT:-8081}:8081"
+    depends_on:
+      backend-api-rest:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - foodapp-network
+
+  frontend-app:
+    build:
+      context: ./frontend-app
+      dockerfile: Dockerfile
+    container_name: foodapp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend-client-app
+    networks:
+      - foodapp-network
+
+volumes:
+  postgres_data:
+
+networks:
+  foodapp-network:
+    driver: bridge

@@ -1,0 +1,8 @@
+app:
+  api:
+    base-url: ${API_BASE_URL:http://backend-api-rest:8080}
+
+logging:
+  level:
+    com.example.foodapp: INFO
+    org.springframework.web.reactive: WARN

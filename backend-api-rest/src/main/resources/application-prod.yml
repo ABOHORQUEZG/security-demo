@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/foodapp}
+    username: ${SPRING_DATASOURCE_USERNAME:foodapp_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:foodapp_secret_2024}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySuperSecretKeyForJWT2024FoodAppMicroservicesArchitecture256Bits!!}
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+
+logging:
+  level:
+    com.example.foodapp: INFO
+    org.springframework.security: WARN
